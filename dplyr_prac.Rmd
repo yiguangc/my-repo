@@ -1,0 +1,76 @@
+---
+title: "whdsm"
+author: "wyg"
+date: "2020/10/17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## dplyr
+```{r}
+library(tidyverse)
+gapminder <- read_csv("D:/class/data software/data/gapminder.csv")
+View(gapminder)
+head(gapminder)
+tail(gapminder)
+head(gapminder, 10)
+str(gapminder)
+```
+
++ **filter()**: pick observations by their values
++ **select()**: pick variables by their names
++ **mutate()**: create new variables with functions of existing variables
++ **summarise()**: collapse many values down to a single summary
++ **arrange()**: reorder the rows
+
+These can all be used in conjunction with **group_by()** which changes the scope of each function from operating on the entire dataset to operating on it group-by-group. 
+
+### 1.filter()
+```{r}
+filter(gapminder, lifeExp < 29)
+filter(gapminder, country == "Mexico")
+filter(gapminder, country %in% c("Mexico", "Peru"))
+filter(gapminder, country == "Mexico", year == 2002)
+clexp <-  
+  c(filter(gapminder, country == "Brazil", year >= 1987)["lifeExp"])
+cl <- as.vector(unlist(clexp)) 
+mean(cl)
+```
+
+
+### 2.select()
+```{r}
+gap1 <- dplyr::select(gapminder, year, country, lifeExp)
+head(gap1, 3)
+gap2 <- dplyr::select(gapminder, year:lifeExp)
+head(gap2, 3)
+gap3 <- dplyr::select(gapminder, 1, 2, 4)
+head(gap3, 3)
+gap4 <- dplyr::select(gapminder, -continent, -lifeExp)
+head(gap4, 3)
+```
+
+
+#### pipe %>% operator
+```{r}
+gap_cambodia <- gapminder %>%
+  filter(country == "Cambodia") %>%
+  dplyr::select(-continent, -lifeExp)
+gap_cambodia
+```
+
+
+### 3.mutate()
+```{r}
+gapminder %>%
+  mutate(gdp = pop * gdpPercap)
+gapminder %>%
+  filter(continent == "Asia", year == 2007) %>%
+  mutate(population = pop / 1000)
+
+```
+
+
